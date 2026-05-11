@@ -1,22 +1,37 @@
 import DitherBackground from "@/components/DitherBackground";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Special_Gothic_Expanded_One } from "next/font/google";
+import Button from "@/components/Button";
+import { RiLinkedinBoxFill, RiGithubFill, RiAttachmentLine, RiInstagramFill } from "@remixicon/react";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
+const specialGothicExpandedOne = Special_Gothic_Expanded_One({
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 export default function HeroSection() {
   return (
     <section className="relative w-screen h-screen overflow-hidden">
       <DitherBackground />
-      
-      <div className={`relative z-10 flex flex-col items-center justify-center h-full text-white ${montserrat.className}`}>
-        <h1 className="text-6xl font-black">Hola, soy Paulo Mantilla</h1>
-        <p className="text-xl mt-4 text-white/70">
-          Soy un estudiante en Ingeniería de Software y Desarrollador Web, 
+
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-transparent to-black/80 pointer-events-none" />
+
+      <div className={`relative z-10 flex flex-col items-center justify-center h-full text-white `}>
+        <h1 className={`text-6xl font-black ${specialGothicExpandedOne.className} text-center leading-tight max-w-2xl`}>Hola, soy <span className="text-[#2CFF68]">Paulo Mantilla</span></h1>
+        <p className={`text-xl mt-4 text-white font-medium ${montserrat.className} text-center max-w-2xl`}>
+          Soy un estudiante en <span className="text-[#2CFF68] font-bold">Ingeniería de Software</span> y <span className="text-[#2CFF68] font-bold">Desarrollador Web</span>,
           especializado en el desarrollo de aplicaciones web modernas y escalables.
         </p>
+        <div className="flex gap-4 mt-8">
+          <Button icon={<RiLinkedinBoxFill size={36} />} text="LinkedIn" type="iconWithText" />
+          <Button icon={<RiGithubFill size={36} />} text="GitHub" type="iconOnly" />
+          <Button icon={<RiAttachmentLine size={36} />} text="CV" type="iconOnly" />
+          <Button icon={<RiInstagramFill size={36} />} text="Instagram" type="iconOnly" />
+        </div>
       </div>
     </section>
   );
