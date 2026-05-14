@@ -27,11 +27,11 @@ export default function HeroSection() {
           especializado en el desarrollo de aplicaciones web modernas y escalables.
         </p>
         <div className="flex flex-col items-center gap-4 mt-8 md:flex-row md:justify-start">
-          <Button icon={<RiLinkedinBoxFill size={36} />} text="LinkedIn" type="iconWithText" />
+          <Button icon={<RiLinkedinBoxFill size={36} />} label="LinkedIn" type="iconWithText" href="https://www.linkedin.com/in/paulomantilla04/" />
           <div className="flex flex-row gap-4">
-            <Button icon={<RiGithubFill size={36} />} text="GitHub" type="iconOnly" />
-            <Button icon={<RiAttachmentLine size={36} />} text="CV" type="iconOnly" />
-            <Button icon={<RiInstagramFill size={36} />} text="Instagram" type="iconOnly" />
+            <Button icon={<RiGithubFill size={36} />} label="GitHub" type="iconOnly" href="https://github.com/paulomantilla04" />
+            <Button icon={<RiAttachmentLine size={36} />} label="CV" type="iconOnly" download="resume.pdf" src="resume.pdf"/>
+            <Button icon={<RiInstagramFill size={36} />} label="Instagram" type="iconOnly" href="https://www.instagram.com/paulomanher/" />
           </div>
         </div>
       </div>
