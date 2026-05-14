@@ -111,6 +111,7 @@ function ProjectCard({
           src={project.thumbnail}
           alt={`Vista previa de ${project.title}`}
           fill
+          sizes="(max-width: 768px) 100vw, 672px"
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
@@ -208,6 +209,7 @@ function ProjectCard({
                         src={image.src}
                         alt={image.caption}
                         fill
+                        sizes="(max-width: 768px) 192px, 224px"
                         className="object-cover"
                       />
                       <div
@@ -336,6 +338,7 @@ export default function ProjectsSection() {
                   src={lightbox.images[lightbox.index].src}
                   alt={lightbox.images[lightbox.index].caption}
                   fill
+                  sizes="(max-width: 768px) 100vw, 896px"
                   className="object-contain"
                 />
               </div>

@@ -73,7 +73,7 @@ export default function ExperienceSection() {
     <section
       ref={sectionRef}
       id="experiencia"
-      className="bg-black px-4 py-16 md:px-6 md:py-20"
+      className="relative bg-black px-4 py-16 md:px-6 md:py-20"
     >
       <div className="mx-auto max-w-3xl">
         <div className="mb-12 text-center">
