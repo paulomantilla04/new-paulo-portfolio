@@ -1,6 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import TechCarousel from "@/components/TechCarousel";
 import ExperienceSection from "@/components/ExperienceSection";
+import ProjectsSection from "@/components/ProjectsSection";
 
 export default function Home() {
   return (
@@ -8,9 +9,7 @@ export default function Home() {
       <HeroSection />
       <TechCarousel />
       <ExperienceSection />
-      <section id="proyectos" className="min-h-screen">
-        <h1>Proyectos</h1>
-      </section>
+      <ProjectsSection />
       <section id="contacto" className="min-h-screen">
         <h1>Contacto</h1>
       </section>
