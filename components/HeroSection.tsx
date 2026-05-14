@@ -11,6 +11,7 @@ const montserrat = Montserrat({
 const specialGothicExpandedOne = Special_Gothic_Expanded_One({
   subsets: ["latin"],
   weight: ["400"],
+  fallback: ["sans-serif"],
 });
 
 export default function HeroSection() {
@@ -18,12 +19,12 @@ export default function HeroSection() {
     <section id="inicio" className="relative w-screen h-screen overflow-hidden">
       <DitherBackground />
 
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-transparent to-black/80 pointer-events-none" />
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-transparent to-black pointer-events-none" />
 
       <div className={`relative z-10 flex flex-col items-center justify-center h-full text-white `}>
         <h1 className={`text-4xl lg:text-6xl font-black ${specialGothicExpandedOne.className} text-center leading-tight max-w-2xl`}>Hola, soy <span className="text-[#2CFF68]">Paulo Mantilla</span></h1>
         <p className={`text-md px-6 lg:text-xl mt-4 text-white font-medium ${montserrat.className} text-center max-w-2xl`}>
-          Soy un estudiante en <span className="text-[#2CFF68] font-bold">Ingeniería de Software</span> y <span className="text-[#2CFF68] font-bold">Desarrollador Web</span>,
+          Soy <span className="text-[#2CFF68] font-bold">Ingeniero de Software</span> y <span className="text-[#2CFF68] font-bold">Desarrollador Web</span>,
           especializado en el desarrollo de aplicaciones web modernas y escalables.
         </p>
         <div className="flex flex-col items-center gap-4 mt-8 md:flex-row md:justify-start">

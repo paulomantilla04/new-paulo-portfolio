@@ -3,6 +3,7 @@ import { Special_Gothic_Expanded_One } from "next/font/google";
 const specialGothicExpandedOne = Special_Gothic_Expanded_One({
     subsets: ["latin"],
     weight: ["400"],
+    fallback: ["sans-serif"],
 });
 
 type ButtonProps = {

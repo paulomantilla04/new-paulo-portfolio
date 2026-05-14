@@ -1,9 +1,11 @@
 import HeroSection from "@/components/HeroSection";
+import TechCarousel from "@/components/TechCarousel";
 
 export default function Home() {
   return (
     <main>
       <HeroSection />
+      <TechCarousel />
       <section id="experiencia" className="min-h-screen">
         <h1>Experiencia</h1>
       </section>
