@@ -16,6 +16,7 @@ import {
     FcAlarmClock,
 } from "react-icons/fc";
 import { Montserrat, Special_Gothic_Expanded_One } from "next/font/google";
+import { toast } from "sonner";
 import Button from "@/components/Button";
 
 const montserrat = Montserrat({
@@ -77,6 +78,7 @@ export default function ProjectWizard() {
     const [direction, setDirection] = useState(1);
     const [formData, setFormData] = useState<FormData>(initialFormData);
     const [showHint, setShowHint] = useState(false);
+    const [isSending, setIsSending] = useState(false);
 
     const isStepValid = (): boolean => {
         switch (currentStep) {
@@ -125,13 +127,38 @@ export default function ProjectWizard() {
         setCurrentStep((prev) => Math.min(prev + 1, totalSteps - 1));
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!isStepValid()) {
             setShowHint(true);
             setTimeout(() => setShowHint(false), 2500);
             return;
         }
-        closeWizard();
+        setIsSending(true);
+
+        try {
+            const res = await fetch("/api/send-project", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Error al enviar");
+
+            toast.success("¡Mensaje enviado! Te contactaré pronto.", {
+                description: `Respuesta a ${formData.email}`,
+                duration: 4000,
+            });
+
+            closeWizard();
+        } catch (err) {
+            toast.error("No se pudo enviar el mensaje.", {
+                description: "Intenta de nuevo o escríbeme directamente.",
+                duration: 4000,
+            });
+        } finally {
+            setIsSending(false);
+        }
     };
     const goBack = () => {
         setDirection(-1);
@@ -302,11 +329,10 @@ export default function ProjectWizard() {
                                 <button
                                     onClick={goBack}
                                     disabled={currentStep === 0}
-                                    className={`${montserrat.className} flex items-center gap-1 text-sm transition-colors ${
-                                        currentStep === 0
+                                    className={`${montserrat.className} flex items-center gap-1 text-sm transition-colors ${currentStep === 0
                                             ? "text-white/20 pointer-events-none"
                                             : "text-white/50 hover:text-white"
-                                    }`}
+                                        }`}
                                 >
                                     <FiChevronLeft size={16} /> Atrás
                                 </button>
@@ -314,14 +340,17 @@ export default function ProjectWizard() {
                                     onClick={
                                         currentStep === totalSteps - 1 ? handleSubmit : goNext
                                     }
-                                    disabled={!isStepValid()}
-                                    className={`${montserrat.className} flex items-center gap-1 text-sm font-bold px-5 py-2 rounded-full transition-all duration-200 ${
-                                        isStepValid()
+                                    disabled={!isStepValid() || isSending}
+                                    className={`${montserrat.className} flex items-center gap-1 text-sm font-bold px-5 py-2 rounded-full transition-all duration-200 ${isStepValid() && !isSending
                                             ? "bg-[#2CFF68] text-black hover:bg-[#A3FFC0] cursor-pointer"
                                             : "bg-white/10 text-white/30 cursor-not-allowed"
-                                    }`}
+                                        }`}
                                 >
-                                    {currentStep === totalSteps - 1 ? "Enviar" : "Continuar"}
+                                    {currentStep === totalSteps - 1
+                                        ? isSending
+                                            ? "Enviando..."
+                                            : "Enviar"
+                                        : "Continuar"}
                                     <FiChevronRight size={16} />
                                 </button>
                             </div>
@@ -358,11 +387,10 @@ function StepProjectType({ formData, setFormData, montserrat, specialGothic }: S
                             onClick={() =>
                                 setFormData((prev) => ({ ...prev, projectType: option.label }))
                             }
-                            className={`border rounded-xl p-4 cursor-pointer transition-all ${
-                                selected
+                            className={`border rounded-xl p-4 cursor-pointer transition-all ${selected
                                     ? "border-[#2CFF68] bg-[#2CFF68]/10"
                                     : "border-white/10 hover:border-[#2CFF68]/50"
-                            }`}
+                                }`}
                         >
                             <div className="text-2xl mb-2 [&>svg]:w-6 [&>svg]:h-6">
                                 {option.icon}
@@ -418,11 +446,10 @@ function StepFeatures({ formData, setFormData, montserrat }: StepProps) {
                         <div
                             key={feature}
                             onClick={() => toggleFeature(feature)}
-                            className={`${montserrat.className} border rounded-full px-4 py-2 text-sm cursor-pointer transition-all ${
-                                selected
+                            className={`${montserrat.className} border rounded-full px-4 py-2 text-sm cursor-pointer transition-all ${selected
                                     ? "border-[#2CFF68] bg-[#2CFF68]/10 text-[#2CFF68]"
                                     : "border-white/10 text-white/60 hover:border-white/30"
-                            }`}
+                                }`}
                         >
                             {feature}
                         </div>
@@ -458,11 +485,10 @@ function StepBudget({ formData, setFormData, montserrat }: StepProps) {
                             onClick={() =>
                                 setFormData((prev) => ({ ...prev, budget: option }))
                             }
-                            className={`border rounded-xl p-4 cursor-pointer transition-all ${
-                                selected
+                            className={`border rounded-xl p-4 cursor-pointer transition-all ${selected
                                     ? "border-[#2CFF68] bg-[#2CFF68]/10"
                                     : "border-white/10 hover:border-[#2CFF68]/50"
-                            }`}
+                                }`}
                         >
                             <p className={`${montserrat.className} text-white/80 text-sm`}>
                                 {option}
@@ -499,11 +525,10 @@ function StepTimeline({ formData, setFormData, montserrat }: StepProps) {
                             onClick={() =>
                                 setFormData((prev) => ({ ...prev, timeline: option.label }))
                             }
-                            className={`border rounded-xl p-4 cursor-pointer transition-all flex items-center gap-3 ${
-                                selected
+                            className={`border rounded-xl p-4 cursor-pointer transition-all flex items-center gap-3 ${selected
                                     ? "border-[#2CFF68] bg-[#2CFF68]/10"
                                     : "border-white/10 hover:border-[#2CFF68]/50"
-                            }`}
+                                }`}
                         >
                             <span className="text-xl [&>svg]:w-5 [&>svg]:h-5">
                                 {option.icon}
@@ -549,11 +574,10 @@ function StepContact({ formData, setFormData, montserrat }: StepProps) {
 
     const emailTouched = formData.email.trim() !== "";
     const emailInvalid = emailTouched && !isValidEmail(formData.email);
-    const emailInputClass = `${montserrat.className} w-full bg-white/5 border rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors placeholder:text-white/30 ${
-        emailInvalid
+    const emailInputClass = `${montserrat.className} w-full bg-white/5 border rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors placeholder:text-white/30 ${emailInvalid
             ? "border-red-500/60 focus:border-red-500"
             : "border-white/10 focus:border-[#2CFF68]/50"
-    }`;
+        }`;
 
     return (
         <div>
