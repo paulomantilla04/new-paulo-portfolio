@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import Grainient from "@/components/Grainient";
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import ProjectWizard from "@/components/ProjectWizard";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -69,12 +70,6 @@ export default function Footer() {
         <p className={`${montserrat.className} text-white text-sm max-w-sm`}>
           ¿Tienes un proyecto en mente? Hablemos.
         </p>
-
-        <Button
-          icon={<MdEmail />}
-          label="paulomantillaa@gmail.com"
-          href="mailto:paulomantilla@gmail.com"
-        />
 
         <div className="flex gap-3">
           <Button

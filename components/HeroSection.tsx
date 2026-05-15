@@ -1,7 +1,9 @@
 import DitherBackground from "@/components/DitherBackground";
 import { Montserrat, Special_Gothic_Expanded_One } from "next/font/google";
 import Button from "@/components/Button";
+import ProjectWizard from "@/components/ProjectWizard";
 import { RiLinkedinBoxFill, RiGithubFill, RiAttachmentLine, RiInstagramFill } from "@remixicon/react";
+
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -27,9 +29,10 @@ export default function HeroSection() {
           Soy <span className="text-[#2CFF68] font-bold">Ingeniero de Software</span> y <span className="text-[#2CFF68] font-bold">Desarrollador Web</span>,
           especializado en el desarrollo de aplicaciones web modernas y escalables.
         </p>
-        <div className="flex flex-col items-center gap-4 mt-8 md:flex-row md:justify-start">
-          <Button icon={<RiLinkedinBoxFill size={36} />} label="LinkedIn" type="iconWithText" href="https://www.linkedin.com/in/paulomantilla04/" />
+        <div className="flex flex-col items-center gap-4 mt-8 md:justify-start">
+          <ProjectWizard />
           <div className="flex flex-row gap-4">
+            <Button icon={<RiLinkedinBoxFill size={36} />} label="LinkedIn" type="iconOnly" href="https://www.linkedin.com/in/paulomantilla04/"/>
             <Button icon={<RiGithubFill size={36} />} label="GitHub" type="iconOnly" href="https://github.com/paulomantilla04" />
             <Button icon={<RiAttachmentLine size={36} />} label="CV" type="iconOnly" download="resume.pdf" src="resume.pdf"/>
             <Button icon={<RiInstagramFill size={36} />} label="Instagram" type="iconOnly" href="https://www.instagram.com/paulomanher/" />

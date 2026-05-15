@@ -151,13 +151,14 @@ function ProjectCard({
 
         <div className="flex gap-2">
           {project.github && (
-            <Button icon={<FaGithub />} label="GitHub" href={project.github} />
+            <Button icon={<FaGithub />} label="GitHub" href={project.github} size="small" />
           )}
           {project.website && (
             <Button
               icon={<FiExternalLink />}
               label="Sitio Web"
               href={project.website}
+              size="small"
             />
           )}
         </div>

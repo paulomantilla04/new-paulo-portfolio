@@ -13,6 +13,8 @@ type ButtonProps = {
     download?: string;
     src?: string;
     type?: "iconOnly" | "iconWithText";
+    size?: "small" | "medium" | "large";
+    onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 };
 
 export default function Button({
@@ -22,6 +24,8 @@ export default function Button({
     download,
     src,
     type = "iconWithText",
+    size = "medium",
+    onClick,
 }: ButtonProps) {
     const isIconOnly = type === "iconOnly";
     const isDownload = Boolean(download && src);
@@ -34,16 +38,19 @@ export default function Button({
         ? "aspect-square p-[1.2rem]"
         : "px-8 py-[1.2rem]";
 
+    const textSizeClasses = size === "small" ? "text-[14px]" : size === "medium" ? "text-[16px]" : "text-[18px]";
+
     return (
         <a
             {...anchorProps}
+            onClick={onClick}
             aria-label={isIconOnly ? label : undefined}
             className={`group relative inline-flex cursor-pointer items-center justify-center overflow-hidden 
-                rounded-[20px] border-none bg-black text-white text-[17px] font-bold tracking-[0.05rem] 
+                rounded-[20px] border-none bg-black text-white ${textSizeClasses} font-bold tracking-[0.05rem] 
                 outline-none before:absolute before:left-[-8%] before:top-0 before:z-0 before:h-[110%] before:w-[120%] 
                 before:skew-x-[20deg] before:bg-[#2CFF68] before:transition-transform before:duration-[400ms] 
                 before:ease-[cubic-bezier(0.3,1,0.8,1)] before:content-[''] before:-translate-x-full 
-                hover:before:translate-x-0 active:before:translate-x-0
+                hover:before:translate-x-0 active:before:translate-x-0 
                 ${sizeClasses} ${specialGothicExpandedOne.className}`}
         >
             <span className="relative z-10 flex items-center gap-2 transition-colors duration-300 group-hover:text-black group-active:text-black">
