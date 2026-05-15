@@ -55,7 +55,7 @@ export default function Footer() {
       <div className="relative z-10 flex flex-col items-center justify-center gap-6 text-center">
 
         <h1 className={`${specialGothicExpandedOne.className} text-white font-bold text-4xl md:text-6xl uppercase`}>
-          Paulo Mantilla
+          Paulo <span className="text-[#2cff68]">Mantilla</span>
         </h1>
 
         <p
