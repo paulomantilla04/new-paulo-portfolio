@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { FiX, FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import {
@@ -79,6 +80,11 @@ export default function ProjectWizard() {
     const [formData, setFormData] = useState<FormData>(initialFormData);
     const [showHint, setShowHint] = useState(false);
     const [isSending, setIsSending] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const isStepValid = (): boolean => {
         switch (currentStep) {
@@ -205,7 +211,8 @@ export default function ProjectWizard() {
                 }}
             />
 
-            <AnimatePresence>
+            {mounted && createPortal(
+                <AnimatePresence>
                 {isOpen && (
                     <motion.div
                         className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
@@ -357,7 +364,9 @@ export default function ProjectWizard() {
                         </motion.div>
                     </motion.div>
                 )}
-            </AnimatePresence>
+                </AnimatePresence>,
+                document.body
+            )}
         </>
     );
 }
