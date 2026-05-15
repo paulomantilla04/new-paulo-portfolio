@@ -16,7 +16,7 @@ const specialGothicExpandedOne = Special_Gothic_Expanded_One({
 
 export default function HeroSection() {
   return (
-    <section id="inicio" className="relative w-screen h-screen overflow-hidden">
+    <section id="inicio" className="relative w-full h-screen overflow-hidden">
       <DitherBackground />
 
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-transparent to-black pointer-events-none" />

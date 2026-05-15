@@ -10,9 +10,6 @@ export default function Home() {
       <TechCarousel />
       <ExperienceSection />
       <ProjectsSection />
-      <section id="contacto" className="min-h-screen">
-        <h1>Contacto</h1>
-      </section>
     </main>
   );
 }

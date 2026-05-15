@@ -47,7 +47,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="hidden md:flex fixed top-6 left-1/2 -translate-x-1/2 z-50 items-center gap-2 px-2 py-2 rounded-2xl bg-black/40 backdrop-blur-md border-[6px] border-black/20">
+      <nav className="hidden md:flex fixed top-6 left-1/2 -translate-x-1/2 z-100 items-center gap-2 px-2 py-2 rounded-2xl bg-black/40 backdrop-blur-md border-[6px] border-black/20">
         {SECTIONS.map((section) => {
           const isActive = activeId === section.id;
           return (

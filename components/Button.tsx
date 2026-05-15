@@ -43,10 +43,10 @@ export default function Button({
                 outline-none before:absolute before:left-[-8%] before:top-0 before:z-0 before:h-[110%] before:w-[120%] 
                 before:skew-x-[20deg] before:bg-[#2CFF68] before:transition-transform before:duration-[400ms] 
                 before:ease-[cubic-bezier(0.3,1,0.8,1)] before:content-[''] before:-translate-x-full 
-                hover:before:translate-x-0 
+                hover:before:translate-x-0 active:before:translate-x-0
                 ${sizeClasses} ${specialGothicExpandedOne.className}`}
         >
-            <span className="relative z-10 flex items-center gap-2 transition-colors duration-300 group-hover:text-black">
+            <span className="relative z-10 flex items-center gap-2 transition-colors duration-300 group-hover:text-black group-active:text-black">
                 {icon}
                 {!isIconOnly && label}
             </span>

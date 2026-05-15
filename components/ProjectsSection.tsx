@@ -114,19 +114,10 @@ function ProjectCard({
           sizes="(max-width: 768px) 100vw, 672px"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
         <div className="absolute bottom-4 left-4">
-          <div className="flex flex-wrap gap-2 mb-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className={`${montserrat.className} border border-white/20 text-white/70 text-xs rounded-full px-3 py-1`}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+
           <h3
             className={`${specialGothicExpandedOne.className} text-white text-xl md:text-2xl font-black`}
           >
@@ -135,6 +126,16 @@ function ProjectCard({
           <p className={`${montserrat.className} text-white/60 text-sm`}>
             {project.subtitle}
           </p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className={`${montserrat.className} border border-white/20 bg-black/10 backdrop-blur-md text-white/70 text-xs rounded-full px-3 py-1`}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -282,8 +283,11 @@ export default function ProjectsSection() {
 
   return (
     <>
-      <section id="proyectos" className="py-16 px-4 md:py-20 md:px-6 bg-black">
-        <div className="max-w-3xl mx-auto">
+      <section
+        id="proyectos"
+        className="relative px-4 pt-16 pb-36 md:pt-20 md:px-6 bg-black overflow-hidden"
+      >
+        <div className="max-w-3xl mx-auto relative z-50">
           <div className="mb-12 text-center">
             <ShinyText
               text="Proyectos"
@@ -312,7 +316,9 @@ export default function ProjectsSection() {
               />
             ))}
           </div>
+
         </div>
+
       </section>
 
       <AnimatePresence>
