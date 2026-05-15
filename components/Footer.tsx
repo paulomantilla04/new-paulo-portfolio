@@ -72,7 +72,7 @@ export default function Footer() {
 
         <Button
           icon={<MdEmail />}
-          label="paulomantilla@gmail.com"
+          label="paulomantillaa@gmail.com"
           href="mailto:paulomantilla@gmail.com"
         />
 
