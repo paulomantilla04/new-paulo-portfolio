@@ -39,22 +39,3 @@ body {
 .animate-scroll {
   animation: scroll-left 25s linear infinite;
 }
-
-/* Lightbox scrollbar */
-.lightbox-scroll::-webkit-scrollbar {
-  height: 4px;
-}
-
-.lightbox-scroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 999px;
-}
-
-.lightbox-scroll::-webkit-scrollbar-thumb {
-  background: #2CFF68;
-  border-radius: 999px;
-}
-
-.lightbox-scroll::-webkit-scrollbar-thumb:hover {
-  background: #A3FFC0;
-}
