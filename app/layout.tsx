@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Paulo Mantilla — Desarrollador Web & Ingeniero de Software",
   description:
-    "Portafolio de Paulo Mantilla, Ingeniero de Software especializado en desarrollo de aplicaciones web modernas y escalables con React, Next.js, TypeScript y más.",
+    "Hola, soy Paulo Mantilla, Ingeniero de Software especializado en desarrollo de aplicaciones web modernas y escalables con React, Next.js, TypeScript y más.",
   keywords: [
     "Paulo Mantilla",
     "Desarrollador Web",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     siteName: "Paulo Mantilla",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.avif",
         width: 1200,
         height: 630,
         alt: "Paulo Mantilla — Desarrollador Web",
@@ -54,16 +54,16 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Paulo Mantilla — Desarrollador Web & Ingeniero de Software",
     description:
-      "Portafolio de Paulo Mantilla, Ingeniero de Software especializado en desarrollo de aplicaciones web modernas y escalables.",
-    images: ["/og-image.png"],
+      "Hola, soy Paulo Mantilla, Ingeniero de Software especializado en desarrollo de aplicaciones web modernas y escalables.",
+    images: ["/og-image.avif"],
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/logopink.svg", sizes: "any" },
+      { url: "/logopink.svg", type: "image/svg+xml" },
     ],
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    shortcut: "/logopink.svg",
+    apple: "/logopink.svg",
   },
   robots: {
     index: true,
