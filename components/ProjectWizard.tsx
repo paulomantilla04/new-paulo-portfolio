@@ -175,8 +175,8 @@ export default function ProjectWizard() {
             if (!res.ok) throw new Error(data.error || "Error al enviar");
 
             toast.success("¡Mensaje enviado! Te contactaré pronto.", {
-                description: `Respuesta a ${formData.email}`,
-                duration: 4000,
+                description: `Revisa tu bandeja de entrada y carpeta de spam.`,
+                duration: 5000,
             });
 
             closeWizard();
