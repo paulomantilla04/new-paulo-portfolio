@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     url: "https://paulomantilla.dev",
     title: "Paulo Mantilla — Desarrollador Web & Ingeniero de Software",
     description:
-      "Portafolio de Paulo Mantilla, Ingeniero de Software especializado en desarrollo de aplicaciones web modernas y escalables.",
+      "Hola, soy Paulo Mantilla, Ingeniero de Software especializado en desarrollo de aplicaciones web modernas y escalables.",
     siteName: "Paulo Mantilla",
     images: [
       {
