@@ -288,7 +288,7 @@ export default function ProjectsSection() {
         id="proyectos"
         className="relative px-4 pt-16 pb-36 md:pt-20 md:px-6 bg-black overflow-hidden"
       >
-        <div className="max-w-3xl mx-auto relative z-50">
+        <div className="max-w-3xl mx-auto relative z-40">
           <div className="mb-12 text-center">
             <ShinyText
               text="Proyectos"

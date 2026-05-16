@@ -94,7 +94,7 @@ export default function Navbar() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -8 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="md:hidden fixed top-20 right-6 z-50 min-w-[180px] flex flex-col gap-1 p-2 rounded-2xl bg-black/80 backdrop-blur-md border-[6px] border-black/20 origin-top-right"
+            className="md:hidden fixed top-20 right-6 z-100 min-w-[180px] flex flex-col gap-1 p-2 rounded-2xl bg-black/80 backdrop-blur-md border-[6px] border-black/20 origin-top-right"
           >
             {SECTIONS.map((section) => {
               const isActive = activeId === section.id;
