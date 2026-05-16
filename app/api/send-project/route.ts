@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 import ProjectRequestEmail from "@/emails/ProjectRequestEmail";
+import ProjectConfirmationEmail from "@/emails/ProjectConfirmationEmail";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -40,6 +41,20 @@ export async function POST(req: NextRequest) {
     if (error) {
       console.error("Resend error:", error);
       return NextResponse.json({ error }, { status: 400 });
+    }
+
+    try {
+      await resend.emails.send({
+        from: "Paulo Mantilla <paulo@paulomantilla.dev>",
+        to: email,
+        subject: "¡Recibí tu idea! Te contactaré pronto 🚀",
+        react: ProjectConfirmationEmail({
+          name,
+          projectType,
+        }),
+      });
+    } catch (confirmError) {
+      console.error("Confirmation email failed:", confirmError);
     }
 
     return NextResponse.json({ success: true, data });

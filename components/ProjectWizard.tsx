@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { FiX, FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import {
     FcIdea,
@@ -59,6 +59,9 @@ const totalSteps = 6;
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const isValidEmail = (email: string) => emailRegex.test(email.trim());
+const subscribeToClientMount = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 type StepProps = {
     formData: FormData;
@@ -67,11 +70,17 @@ type StepProps = {
     specialGothic?: { className: string };
 };
 
-const variants = {
-    enter: (dir: number) => ({ x: dir > 0 ? "60%" : "-60%", opacity: 0 }),
+const getStepVariants = (shouldReduceMotion: boolean) => ({
+    enter: (dir: number) => ({
+        x: shouldReduceMotion ? "0%" : dir > 0 ? "60%" : "-60%",
+        opacity: shouldReduceMotion ? 1 : 0,
+    }),
     center: { x: "0%", opacity: 1 },
-    exit: (dir: number) => ({ x: dir > 0 ? "-60%" : "60%", opacity: 0 }),
-};
+    exit: (dir: number) => ({
+        x: shouldReduceMotion ? "0%" : dir > 0 ? "-60%" : "60%",
+        opacity: shouldReduceMotion ? 1 : 0,
+    }),
+});
 
 export default function ProjectWizard() {
     const [isOpen, setIsOpen] = useState(false);
@@ -80,11 +89,25 @@ export default function ProjectWizard() {
     const [formData, setFormData] = useState<FormData>(initialFormData);
     const [showHint, setShowHint] = useState(false);
     const [isSending, setIsSending] = useState(false);
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    const mounted = useSyncExternalStore(
+        subscribeToClientMount,
+        getClientSnapshot,
+        getServerSnapshot
+    );
+    const shouldReduceMotion = useReducedMotion();
+    const stepVariants = getStepVariants(Boolean(shouldReduceMotion));
+    const overlayTransition = shouldReduceMotion ? { duration: 0 } : undefined;
+    const sheetTransition = shouldReduceMotion
+        ? { duration: 0 }
+        : { type: "spring" as const, stiffness: 300, damping: 25 };
+    const stepTransition = {
+        duration: shouldReduceMotion ? 0 : 0.3,
+        ease: "easeInOut" as const,
+    };
+    const progressTransition = {
+        duration: shouldReduceMotion ? 0 : 0.4,
+        ease: "easeInOut" as const,
+    };
 
     const isStepValid = (): boolean => {
         switch (currentStep) {
@@ -152,12 +175,12 @@ export default function ProjectWizard() {
             if (!res.ok) throw new Error(data.error || "Error al enviar");
 
             toast.success("¡Mensaje enviado! Te contactaré pronto.", {
-                description: `Respuesta a ${formData.email}`,
-                duration: 4000,
+                description: `Revisa tu bandeja de entrada y carpeta de spam.`,
+                duration: 5000,
             });
 
             closeWizard();
-        } catch (err) {
+        } catch {
             toast.error("No se pudo enviar el mensaje.", {
                 description: "Intenta de nuevo o escríbeme directamente.",
                 duration: 4000,
@@ -167,6 +190,7 @@ export default function ProjectWizard() {
         }
     };
     const goBack = () => {
+        setShowHint(false);
         setDirection(-1);
         setCurrentStep((prev) => Math.max(prev - 1, 0));
     };
@@ -184,12 +208,7 @@ export default function ProjectWizard() {
         };
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
-
-    useEffect(() => {
-        setShowHint(false);
-    }, [currentStep]);
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
@@ -215,62 +234,65 @@ export default function ProjectWizard() {
                 <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
+                        className="fixed inset-0 z-[200] flex h-[100dvh] items-end justify-center overflow-hidden bg-black/80 backdrop-blur-sm sm:items-center sm:px-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        transition={overlayTransition}
                         onClick={closeWizard}
                     >
                         <motion.div
-                            className="w-full max-w-lg bg-[#0a0a0a] rounded-3xl border border-white/10 overflow-hidden"
+                            className="flex h-[100dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#0a0a0a] sm:h-auto sm:max-h-[90dvh] sm:max-w-lg sm:rounded-3xl"
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                            transition={sheetTransition}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="flex items-center justify-between px-6 pt-6">
-                                <div>
-                                    <p
-                                        className={`${montserrat.className} text-white/40 text-xs tracking-widest uppercase`}
+                            <div className="flex-shrink-0">
+                                <div className="flex items-center justify-between px-6 pt-6">
+                                    <div>
+                                        <p
+                                            className={`${montserrat.className} text-white/40 text-[0.8rem] tracking-widest uppercase`}
+                                        >
+                                            Cuéntame tu idea
+                                        </p>
+                                        <p
+                                            className={`${montserrat.className} mt-1 text-[0.8rem] text-white/20`}
+                                        >
+                                            Paso {currentStep + 1} de {totalSteps}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={closeWizard}
+                                        className="min-h-11 min-w-11 text-white/40 transition-colors hover:text-white"
+                                        aria-label="Cerrar"
                                     >
-                                        Cuéntame tu idea
-                                    </p>
-                                    <p
-                                        className={`${montserrat.className} text-white/20 text-xs mt-1`}
-                                    >
-                                        Paso {currentStep + 1} de {totalSteps}
-                                    </p>
+                                        <FiX size={18} className="mx-auto" />
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={closeWizard}
-                                    className="text-white/40 hover:text-white transition-colors p-1"
-                                    aria-label="Cerrar"
-                                >
-                                    <FiX size={18} />
-                                </button>
+
+                                <div className="mx-6 mt-4 h-[2px] overflow-hidden rounded-full bg-white/10">
+                                    <motion.div
+                                        className="h-full rounded-full bg-[#2CFF68]"
+                                        animate={{
+                                            width: `${((currentStep + 1) / totalSteps) * 100}%`,
+                                        }}
+                                        transition={progressTransition}
+                                    />
+                                </div>
                             </div>
 
-                            <div className="mx-6 mt-4 h-[2px] bg-white/10 rounded-full overflow-hidden">
-                                <motion.div
-                                    className="h-full bg-[#2CFF68] rounded-full"
-                                    animate={{
-                                        width: `${((currentStep + 1) / totalSteps) * 100}%`,
-                                    }}
-                                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                                />
-                            </div>
-
-                            <div className="overflow-hidden min-h-[280px] px-6 py-6">
+                            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6">
                                 <AnimatePresence mode="wait" custom={direction}>
                                     <motion.div
                                         key={currentStep}
                                         custom={direction}
-                                        variants={variants}
+                                        variants={stepVariants}
                                         initial="enter"
                                         animate="center"
                                         exit="exit"
-                                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                                        transition={stepTransition}
                                     >
                                         {currentStep === 0 && (
                                             <StepProjectType
@@ -319,47 +341,50 @@ export default function ProjectWizard() {
                                 </AnimatePresence>
                             </div>
 
-                            <AnimatePresence>
-                                {showHint && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: -4 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0 }}
-                                        className={`${montserrat.className} text-[#2CFF68]/70 text-xs text-center px-6 pb-2`}
-                                    >
-                                        {hintMessage()}
-                                    </motion.p>
-                                )}
-                            </AnimatePresence>
+                            <div className="flex-shrink-0 border-t border-white/5 bg-[#0a0a0a]">
+                                <AnimatePresence>
+                                    {showHint && (
+                                        <motion.p
+                                            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={stepTransition}
+                                            className={`${montserrat.className} px-6 pb-2 pt-3 text-center text-[0.8rem] text-[#2CFF68]/70`}
+                                        >
+                                            {hintMessage()}
+                                        </motion.p>
+                                    )}
+                                </AnimatePresence>
 
-                            <div className="flex items-center justify-between px-6 pb-6">
-                                <button
-                                    onClick={goBack}
-                                    disabled={currentStep === 0}
-                                    className={`${montserrat.className} flex items-center gap-1 text-sm transition-colors ${currentStep === 0
-                                            ? "text-white/20 pointer-events-none"
-                                            : "text-white/50 hover:text-white"
-                                        }`}
-                                >
-                                    <FiChevronLeft size={16} /> Atrás
-                                </button>
-                                <button
-                                    onClick={
-                                        currentStep === totalSteps - 1 ? handleSubmit : goNext
-                                    }
-                                    disabled={!isStepValid() || isSending}
-                                    className={`${montserrat.className} flex items-center gap-1 text-sm font-bold px-5 py-2 rounded-full transition-all duration-200 ${isStepValid() && !isSending
-                                            ? "bg-[#2CFF68] text-black hover:bg-[#A3FFC0] cursor-pointer"
-                                            : "bg-white/10 text-white/30 cursor-not-allowed"
-                                        }`}
-                                >
-                                    {currentStep === totalSteps - 1
-                                        ? isSending
-                                            ? "Enviando..."
-                                            : "Enviar"
-                                        : "Continuar"}
-                                    <FiChevronRight size={16} />
-                                </button>
+                                <div className="flex items-center justify-between px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
+                                    <button
+                                        onClick={goBack}
+                                        disabled={currentStep === 0}
+                                        className={`${montserrat.className} flex min-h-11 items-center gap-1 rounded-full px-2 py-3 text-sm transition-colors ${currentStep === 0
+                                                ? "pointer-events-none text-white/20"
+                                                : "text-white/50 hover:text-white"
+                                            }`}
+                                    >
+                                        <FiChevronLeft size={16} /> Atrás
+                                    </button>
+                                    <button
+                                        onClick={
+                                            currentStep === totalSteps - 1 ? handleSubmit : goNext
+                                        }
+                                        disabled={!isStepValid() || isSending}
+                                        className={`${montserrat.className} flex min-h-11 items-center gap-1 rounded-full px-6 py-3 text-sm font-bold transition-all duration-200 ${isStepValid() && !isSending
+                                                ? "cursor-pointer bg-[#2CFF68] text-black hover:bg-[#A3FFC0]"
+                                                : "cursor-not-allowed bg-white/10 text-white/30"
+                                            }`}
+                                    >
+                                        {currentStep === totalSteps - 1
+                                            ? isSending
+                                                ? "Enviando..."
+                                                : "Enviar"
+                                            : "Continuar"}
+                                        <FiChevronRight size={16} />
+                                    </button>
+                                </div>
                             </div>
                         </motion.div>
                     </motion.div>
@@ -387,16 +412,18 @@ function StepProjectType({ formData, setFormData, montserrat, specialGothic }: S
             >
                 ¿Qué tipo de proyecto tienes en mente?
             </h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {projectTypes.map((option) => {
                     const selected = formData.projectType === option.label;
                     return (
-                        <div
+                        <button
+                            type="button"
                             key={option.label}
                             onClick={() =>
                                 setFormData((prev) => ({ ...prev, projectType: option.label }))
                             }
-                            className={`border rounded-xl p-4 cursor-pointer transition-all ${selected
+                            aria-pressed={selected}
+                            className={`w-full cursor-pointer rounded-xl border p-4 text-left transition-all ${selected
                                     ? "border-[#2CFF68] bg-[#2CFF68]/10"
                                     : "border-white/10 hover:border-[#2CFF68]/50"
                                 }`}
@@ -409,7 +436,7 @@ function StepProjectType({ formData, setFormData, montserrat, specialGothic }: S
                             >
                                 {option.label}
                             </p>
-                        </div>
+                        </button>
                     );
                 })}
             </div>
@@ -452,16 +479,18 @@ function StepFeatures({ formData, setFormData, montserrat }: StepProps) {
                 {featureOptions.map((feature) => {
                     const selected = formData.features.includes(feature);
                     return (
-                        <div
+                        <button
+                            type="button"
                             key={feature}
                             onClick={() => toggleFeature(feature)}
-                            className={`${montserrat.className} border rounded-full px-4 py-2 text-sm cursor-pointer transition-all ${selected
+                            aria-pressed={selected}
+                            className={`${montserrat.className} cursor-pointer rounded-full border px-4 py-2 text-sm transition-all ${selected
                                     ? "border-[#2CFF68] bg-[#2CFF68]/10 text-[#2CFF68]"
                                     : "border-white/10 text-white/60 hover:border-white/30"
                                 }`}
                         >
                             {feature}
-                        </div>
+                        </button>
                     );
                 })}
             </div>
@@ -489,12 +518,14 @@ function StepBudget({ formData, setFormData, montserrat }: StepProps) {
                 {budgetOptions.map((option) => {
                     const selected = formData.budget === option;
                     return (
-                        <div
+                        <button
+                            type="button"
                             key={option}
                             onClick={() =>
                                 setFormData((prev) => ({ ...prev, budget: option }))
                             }
-                            className={`border rounded-xl p-4 cursor-pointer transition-all ${selected
+                            aria-pressed={selected}
+                            className={`w-full cursor-pointer rounded-xl border p-4 text-left transition-all ${selected
                                     ? "border-[#2CFF68] bg-[#2CFF68]/10"
                                     : "border-white/10 hover:border-[#2CFF68]/50"
                                 }`}
@@ -502,7 +533,7 @@ function StepBudget({ formData, setFormData, montserrat }: StepProps) {
                             <p className={`${montserrat.className} text-white/80 text-sm`}>
                                 {option}
                             </p>
-                        </div>
+                        </button>
                     );
                 })}
             </div>
@@ -529,12 +560,14 @@ function StepTimeline({ formData, setFormData, montserrat }: StepProps) {
                 {timelineOptions.map((option) => {
                     const selected = formData.timeline === option.label;
                     return (
-                        <div
+                        <button
+                            type="button"
                             key={option.label}
                             onClick={() =>
                                 setFormData((prev) => ({ ...prev, timeline: option.label }))
                             }
-                            className={`border rounded-xl p-4 cursor-pointer transition-all flex items-center gap-3 ${selected
+                            aria-pressed={selected}
+                            className={`flex w-full cursor-pointer items-center gap-3 rounded-xl border p-4 text-left transition-all ${selected
                                     ? "border-[#2CFF68] bg-[#2CFF68]/10"
                                     : "border-white/10 hover:border-[#2CFF68]/50"
                                 }`}
@@ -545,7 +578,7 @@ function StepTimeline({ formData, setFormData, montserrat }: StepProps) {
                             <p className={`${montserrat.className} text-white/80 text-sm`}>
                                 {option.label}
                             </p>
-                        </div>
+                        </button>
                     );
                 })}
             </div>
