@@ -20,6 +20,11 @@
 }
 
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   ::selection {
     @apply bg-[#2CFF68] text-black;
   }
