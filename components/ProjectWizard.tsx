@@ -499,10 +499,10 @@ function StepFeatures({ formData, setFormData, montserrat }: StepProps) {
 }
 
 const budgetOptions = [
-    "Menos de $500 USD",
-    "$500 - $1,500 USD",
-    "$1,500 - $5,000 USD",
-    "Más de $5,000 USD",
+    "Menos de $5,000 MXN",
+    "$5,000 - $10,000 MXN",
+    "$10,000 - $20,000 MXN",
+    "Más de $20,000 MXN",
     "Por definir",
 ];
 
