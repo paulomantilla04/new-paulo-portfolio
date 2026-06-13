@@ -9,9 +9,9 @@ import ShinyText from "@/components/ShinyText";
 const EXPERIENCES = [
   {
     period: "Abril 2026 - Presente",
-    role: "Analista Web",
+    role: "Desarrollador Fullstack",
     company: "@ Nexen E-Logistics",
-    description: "Resolución de tickets técnicos y desarrollo de mejoras en plataformas internas construidas con React y Laravel como sistemas de soporte.",
+    description: "Implementación de mejoras en plataformas para comercio exterior construidas con React y Laravel. Trabajo en el proceso completo desde diseñar e implementar interfaces, desarrollar APIs y la lógica de negocio.",
   },
   {
     period: "Noviembre 2024 - Mayo 2025",
@@ -56,7 +56,7 @@ function DotItem({ index, total, scrollYProgress }: DotItemProps) {
   return (
     <motion.div
       style={{ backgroundColor }}
-      className="relative z-10 mt-5 h-3 w-3 flex-shrink-0 rounded-full border-2 border-[#2CFF68]"
+      className="relative z-10 mt-5 h-3 w-3 shrink-0 rounded-full border-2 border-[#2CFF68]"
     />
   );
 }
@@ -93,10 +93,10 @@ export default function ExperienceSection() {
         </div>
 
         <div className="relative flex flex-col">
-          <div className="absolute left-[13px] top-0 h-full w-[3px] -translate-x-1/2 rounded-full bg-white/10" />
+          <div className="absolute left-3.25 top-0 h-full w-0.75 -translate-x-1/2 rounded-full bg-white/10" />
           <motion.div
             style={{ height: lineHeight }}
-            className="absolute left-[13px] top-0 w-[3px] -translate-x-1/2 rounded-full bg-[#2CFF68]"
+            className="absolute left-3.25 top-0 w-0.75 -translate-x-1/2 rounded-full bg-[#2CFF68]"
           />
 
           {EXPERIENCES.map((exp, index) => {
@@ -105,7 +105,7 @@ export default function ExperienceSection() {
                 key={`${exp.period}-${exp.role}`}
                 className="mb-6 flex flex-row items-start gap-4"
               >
-                <div className="flex w-7 flex-shrink-0 justify-center">
+                <div className="flex w-7 shrink-0 justify-center">
                   <DotItem
                     index={index}
                     total={EXPERIENCES.length}
