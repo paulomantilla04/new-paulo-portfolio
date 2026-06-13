@@ -4,8 +4,7 @@ import { Montserrat, Special_Gothic_Expanded_One } from "next/font/google";
 import Button from "@/components/Button";
 import Grainient from "@/components/Grainient";
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
-import ProjectWizard from "@/components/ProjectWizard";
+import { useT } from "@/lib/i18n/context";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -19,6 +18,7 @@ const specialGothicExpandedOne = Special_Gothic_Expanded_One({
 });
 
 export default function Footer() {
+  const t = useT();
   return (
     <footer
       id="contacto"
@@ -62,13 +62,13 @@ export default function Footer() {
         <p
           className={`${montserrat.className} text-white text-sm md:text-base font-medium tracking-wide`}
         >
-          Ingeniero de Software | Desarrollador Web
+          {t.footer.role}
         </p>
 
-        <div className="w-16 h-[2px] bg-white rounded-full" />
+        <div className="w-16 h-0.5 bg-white rounded-full" />
 
         <p className={`${montserrat.className} text-white text-sm max-w-sm`}>
-          ¿Tienes un proyecto en mente? Hablemos.
+          {t.footer.cta}
         </p>
 
         <div className="flex gap-3">
@@ -92,11 +92,10 @@ export default function Footer() {
           />
         </div>
 
-        <div className="w-16 h-[2px] bg-white/20 rounded-full" />
+        <div className="w-16 h-0.5 bg-white/20 rounded-full" />
 
         <p className={`${montserrat.className} text-white text-xs`}>
-          © {new Date().getFullYear()} Paulo Mantilla. Todos los derechos
-          reservados.
+          © {new Date().getFullYear()} Paulo Mantilla. {t.footer.rights}
         </p>
       </div>
     </footer>

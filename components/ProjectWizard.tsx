@@ -21,6 +21,10 @@ import {
 import { Montserrat, Special_Gothic_Expanded_One } from "next/font/google";
 import { toast } from "sonner";
 import Button from "@/components/Button";
+import { useT } from "@/lib/i18n/context";
+import type { Dictionary } from "@/lib/i18n/types";
+
+type WizardDict = Dictionary["wizard"];
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -63,20 +67,20 @@ const totalSteps = 6;
 
 const WHATSAPP_NUMBER = "523349819028";
 
-const buildWhatsappMessage = (formData: FormData) => {
+const buildWhatsappMessage = (formData: FormData, w: WizardDict["whatsapp"]) => {
   const lines = [
-    `¡Hola Paulo! Soy ${formData.name.trim()} y me gustaría platicar sobre un proyecto.`,
+    w.greeting.replace("{name}", formData.name.trim()),
     "",
-    `*Tipo de proyecto:* ${formData.projectType}`,
-    `*Funcionalidades:* ${formData.features.join(", ")}`,
-    `*Presupuesto:* ${formData.budget}`,
-    `*Tiempo:* ${formData.timeline}`,
+    `*${w.projectType}:* ${formData.projectType}`,
+    `*${w.features}:* ${formData.features.join(", ")}`,
+    `*${w.budget}:* ${formData.budget}`,
+    `*${w.timeline}:* ${formData.timeline}`,
     "",
-    `*Descripción:* ${formData.description.trim()}`,
+    `*${w.description}:* ${formData.description.trim()}`,
   ];
-  if (formData.company.trim()) lines.push(`*Empresa:* ${formData.company.trim()}`);
+  if (formData.company.trim()) lines.push(`*${w.company}:* ${formData.company.trim()}`);
   if (formData.howFound.trim())
-    lines.push(`*¿Cómo te encontré?:* ${formData.howFound.trim()}`);
+    lines.push(`*${w.howFound}:* ${formData.howFound.trim()}`);
   return lines.join("\n");
 };
 
@@ -91,6 +95,7 @@ type StepProps = {
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   montserrat: { className: string };
   specialGothic?: { className: string };
+  t: WizardDict;
 };
 
 const getStepVariants = (shouldReduceMotion: boolean) => ({
@@ -106,6 +111,8 @@ const getStepVariants = (shouldReduceMotion: boolean) => ({
 });
 
 export default function ProjectWizard() {
+  const t = useT();
+  const w = t.wizard;
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -155,19 +162,15 @@ export default function ProjectWizard() {
   const hintMessage = () => {
     if (currentStep === 5) {
       if (formData.contact === "Whatsapp") {
-        return "Por favor ingresa tu nombre para continuar.";
+        return w.hints.name;
       }
-      if (formData.name.trim() === "")
-        return "Por favor ingresa tu nombre y email para continuar.";
-      if (formData.email.trim() === "")
-        return "Por favor ingresa tu email para continuar.";
-      if (!isValidEmail(formData.email))
-        return "Por favor ingresa un email válido (ej. tu@email.com).";
-      return "Por favor ingresa tu nombre y email para continuar.";
+      if (formData.name.trim() === "") return w.hints.nameEmail;
+      if (formData.email.trim() === "") return w.hints.email;
+      if (!isValidEmail(formData.email)) return w.hints.validEmail;
+      return w.hints.nameEmail;
     }
-    if (currentStep === 4)
-      return "Por favor describe tu proyecto antes de continuar.";
-    return "Por favor selecciona al menos una opción para continuar.";
+    if (currentStep === 4) return w.hints.describe;
+    return w.hints.selectOne;
   };
 
   const goNext = () => {
@@ -199,15 +202,15 @@ export default function ProjectWizard() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al enviar");
 
-      toast.success("¡Mensaje enviado! Te contactaré pronto.", {
-        description: `Revisa tu bandeja de entrada y carpeta de spam.`,
+      toast.success(w.toast.successTitle, {
+        description: w.toast.successDesc,
         duration: 5000,
       });
 
       closeWizard();
     } catch {
-      toast.error("No se pudo enviar el mensaje.", {
-        description: "Intenta de nuevo o escríbeme directamente.",
+      toast.error(w.toast.errorTitle, {
+        description: w.toast.errorDesc,
         duration: 4000,
       });
     } finally {
@@ -220,7 +223,9 @@ export default function ProjectWizard() {
       setTimeout(() => setShowHint(false), 2500);
       return;
     }
-    const message = encodeURIComponent(buildWhatsappMessage(formData));
+    const message = encodeURIComponent(
+      buildWhatsappMessage(formData, w.whatsapp),
+    );
     window.open(
       `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`,
       "_blank",
@@ -261,7 +266,7 @@ export default function ProjectWizard() {
     <>
       <Button
         icon={<FcIdea size={36} />}
-        label="¿Tienes una idea?"
+        label={w.trigger}
         type="iconWithText"
         size="small"
         onClick={(e) => {
@@ -296,18 +301,18 @@ export default function ProjectWizard() {
                         <p
                           className={`${montserrat.className} text-white/40 text-[0.8rem] tracking-widest uppercase`}
                         >
-                          Cuéntame tu idea
+                          {w.eyebrow}
                         </p>
                         <p
                           className={`${montserrat.className} mt-1 text-[0.8rem] text-white/20`}
                         >
-                          Paso {currentStep + 1} de {totalSteps}
+                          {w.step} {currentStep + 1} {w.stepOf} {totalSteps}
                         </p>
                       </div>
                       <button
                         onClick={closeWizard}
                         className="min-h-11 min-w-11 text-white/40 transition-colors hover:text-white"
-                        aria-label="Cerrar"
+                        aria-label={w.close}
                       >
                         <FiX size={18} className="mx-auto" />
                       </button>
@@ -341,6 +346,7 @@ export default function ProjectWizard() {
                             setFormData={setFormData}
                             montserrat={montserrat}
                             specialGothic={specialGothicExpandedOne}
+                            t={w}
                           />
                         )}
                         {currentStep === 1 && (
@@ -348,6 +354,7 @@ export default function ProjectWizard() {
                             formData={formData}
                             setFormData={setFormData}
                             montserrat={montserrat}
+                            t={w}
                           />
                         )}
                         {currentStep === 2 && (
@@ -355,6 +362,7 @@ export default function ProjectWizard() {
                             formData={formData}
                             setFormData={setFormData}
                             montserrat={montserrat}
+                            t={w}
                           />
                         )}
                         {currentStep === 3 && (
@@ -362,6 +370,7 @@ export default function ProjectWizard() {
                             formData={formData}
                             setFormData={setFormData}
                             montserrat={montserrat}
+                            t={w}
                           />
                         )}
                         {currentStep === 4 && (
@@ -369,6 +378,7 @@ export default function ProjectWizard() {
                             formData={formData}
                             setFormData={setFormData}
                             montserrat={montserrat}
+                            t={w}
                           />
                         )}
                         {currentStep === 5 && (
@@ -376,6 +386,7 @@ export default function ProjectWizard() {
                             formData={formData}
                             setFormData={setFormData}
                             montserrat={montserrat}
+                            t={w}
                           />
                         )}
                       </motion.div>
@@ -410,7 +421,7 @@ export default function ProjectWizard() {
                             : "text-white/50 hover:text-white"
                         }`}
                       >
-                        <FiChevronLeft size={16} /> Atrás
+                        <FiChevronLeft size={16} /> {w.back}
                       </button>
                       <button
                         onClick={
@@ -429,11 +440,11 @@ export default function ProjectWizard() {
                       >
                         {currentStep === totalSteps - 1
                           ? formData.contact === "Whatsapp"
-                            ? "Abrir WhatsApp"
+                            ? w.openWhatsapp
                             : isSending
-                              ? "Enviando..."
-                              : "Enviar"
-                          : "Continuar"}
+                              ? w.sending
+                              : w.send
+                          : w.continue}
                         <FiChevronRight size={16} />
                       </button>
                     </div>
@@ -448,12 +459,12 @@ export default function ProjectWizard() {
   );
 }
 
-const projectTypes = [
-  { icon: <FcGlobe />, label: "Sitio web / Landing page" },
-  { icon: <FcEngineering />, label: "Aplicación web" },
-  { icon: <FcCellPhone />, label: "App móvil" },
-  { icon: <FcShop />, label: "E-commerce" },
-  { icon: <FcDecision />, label: "No sé / Necesito asesoría" },
+const projectTypeIcons = [
+  <FcGlobe key="globe" />,
+  <FcEngineering key="engineering" />,
+  <FcCellPhone key="cellphone" />,
+  <FcShop key="shop" />,
+  <FcDecision key="decision" />,
 ];
 
 function StepProjectType({
@@ -461,23 +472,24 @@ function StepProjectType({
   setFormData,
   montserrat,
   specialGothic,
+  t,
 }: StepProps) {
   return (
     <div>
       <h3
         className={`${specialGothic?.className ?? ""} text-white text-xl mb-5 leading-snug`}
       >
-        ¿Qué tipo de proyecto tienes en mente?
+        {t.steps.projectType.title}
       </h3>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {projectTypes.map((option) => {
-          const selected = formData.projectType === option.label;
+        {t.steps.projectType.options.map((label, i) => {
+          const selected = formData.projectType === label;
           return (
             <button
               type="button"
-              key={option.label}
+              key={label}
               onClick={() =>
-                setFormData((prev) => ({ ...prev, projectType: option.label }))
+                setFormData((prev) => ({ ...prev, projectType: label }))
               }
               aria-pressed={selected}
               className={`w-full cursor-pointer rounded-xl border p-4 text-left transition-all ${
@@ -487,12 +499,12 @@ function StepProjectType({
               }`}
             >
               <div className="text-2xl mb-2 [&>svg]:w-6 [&>svg]:h-6">
-                {option.icon}
+                {projectTypeIcons[i]}
               </div>
               <p
                 className={`${montserrat.className} text-white/80 text-sm leading-snug`}
               >
-                {option.label}
+                {label}
               </p>
             </button>
           );
@@ -502,18 +514,7 @@ function StepProjectType({
   );
 }
 
-const featureOptions = [
-  "Autenticación / Login",
-  "Base de datos",
-  "Pagos en línea",
-  "Panel de administración",
-  "API / Integraciones",
-  "Diseño UI/UX",
-  "Integración con IA",
-  "Multilenguaje",
-];
-
-function StepFeatures({ formData, setFormData, montserrat }: StepProps) {
+function StepFeatures({ formData, setFormData, montserrat, t }: StepProps) {
   const toggleFeature = (feature: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -528,13 +529,13 @@ function StepFeatures({ formData, setFormData, montserrat }: StepProps) {
       <h3
         className={`${montserrat.className} text-white text-xl font-semibold mb-1 leading-snug`}
       >
-        ¿Qué funcionalidades necesitas?
+        {t.steps.features.title}
       </h3>
       <p className={`${montserrat.className} text-white/40 text-xs mb-5`}>
-        Puedes seleccionar varias
+        {t.steps.features.subtitle}
       </p>
       <div className="flex flex-wrap gap-2">
-        {featureOptions.map((feature) => {
+        {t.steps.features.options.map((feature) => {
           const selected = formData.features.includes(feature);
           return (
             <button
@@ -557,23 +558,16 @@ function StepFeatures({ formData, setFormData, montserrat }: StepProps) {
   );
 }
 
-const budgetOptions = [
-  "$5,000 - $10,000 MXN",
-  "$10,000 - $20,000 MXN",
-  "Más de $20,000 MXN",
-  "Por definir",
-];
-
-function StepBudget({ formData, setFormData, montserrat }: StepProps) {
+function StepBudget({ formData, setFormData, montserrat, t }: StepProps) {
   return (
     <div>
       <h3
         className={`${montserrat.className} text-white text-xl font-semibold mb-5 leading-snug`}
       >
-        ¿Cuál es tu presupuesto aproximado?
+        {t.steps.budget.title}
       </h3>
       <div className="flex flex-col gap-3">
-        {budgetOptions.map((option) => {
+        {t.steps.budget.options.map((option) => {
           const selected = formData.budget === option;
           return (
             <button
@@ -600,31 +594,31 @@ function StepBudget({ formData, setFormData, montserrat }: StepProps) {
   );
 }
 
-const timelineOptions = [
-  { icon: <FcFlashOn />, label: "Urgente (menos de 1 mes)" },
-  { icon: <FcPlanner />, label: "1 - 3 meses" },
-  { icon: <FcCalendar />, label: "3 - 6 meses" },
-  { icon: <FcAlarmClock />, label: "Sin fecha límite" },
+const timelineIcons = [
+  <FcFlashOn key="flash" />,
+  <FcPlanner key="planner" />,
+  <FcCalendar key="calendar" />,
+  <FcAlarmClock key="alarm" />,
 ];
 
-function StepTimeline({ formData, setFormData, montserrat }: StepProps) {
+function StepTimeline({ formData, setFormData, montserrat, t }: StepProps) {
   return (
     <div>
       <h3
         className={`${montserrat.className} text-white text-xl font-semibold mb-5 leading-snug`}
       >
-        ¿En cuánto tiempo necesitas el proyecto?
+        {t.steps.timeline.title}
       </h3>
       <div></div>
       <div className="flex flex-col gap-3">
-        {timelineOptions.map((option) => {
-          const selected = formData.timeline === option.label;
+        {t.steps.timeline.options.map((label, i) => {
+          const selected = formData.timeline === label;
           return (
             <button
               type="button"
-              key={option.label}
+              key={label}
               onClick={() =>
-                setFormData((prev) => ({ ...prev, timeline: option.label }))
+                setFormData((prev) => ({ ...prev, timeline: label }))
               }
               aria-pressed={selected}
               className={`flex w-full cursor-pointer items-center gap-3 rounded-xl border p-4 text-left transition-all ${
@@ -634,10 +628,10 @@ function StepTimeline({ formData, setFormData, montserrat }: StepProps) {
               }`}
             >
               <span className="text-xl [&>svg]:w-5 [&>svg]:h-5">
-                {option.icon}
+                {timelineIcons[i]}
               </span>
               <p className={`${montserrat.className} text-white/80 text-sm`}>
-                {option.label}
+                {label}
               </p>
             </button>
           );
@@ -647,20 +641,20 @@ function StepTimeline({ formData, setFormData, montserrat }: StepProps) {
   );
 }
 
-function StepDescription({ formData, setFormData, montserrat }: StepProps) {
+function StepDescription({ formData, setFormData, montserrat, t }: StepProps) {
   return (
     <div>
       <h3
         className={`${montserrat.className} text-white text-xl font-semibold mb-1 leading-snug`}
       >
-        Cuéntame más sobre tu idea
+        {t.steps.description.title}
       </h3>
       <p className={`${montserrat.className} text-white/40 text-xs mb-5`}>
-        Entre más detalles, mejor puedo ayudarte
+        {t.steps.description.subtitle}
       </p>
       <textarea
         rows={5}
-        placeholder="Describe tu proyecto, qué problema resuelve, quién lo usará, si tienes referencias visuales..."
+        placeholder={t.steps.description.placeholder}
         className={`${montserrat.className} w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white text-sm resize-none focus:outline-none focus:border-[#2CFF68]/50 transition-colors placeholder:text-white/30`}
         value={formData.description}
         onChange={(e) =>
@@ -682,7 +676,7 @@ const contactOptions = [
   },
 ];
 
-function StepContact({ formData, setFormData, montserrat }: StepProps) {
+function StepContact({ formData, setFormData, montserrat, t }: StepProps) {
   const inputClass = `${montserrat.className} w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#2CFF68]/50 transition-colors placeholder:text-white/30`;
   const labelClass = `${montserrat.className} block text-white/50 text-xs mb-1`;
 
@@ -699,7 +693,7 @@ function StepContact({ formData, setFormData, montserrat }: StepProps) {
       <h3
         className={`${montserrat.className} text-white text-xl font-semibold mb-5 leading-snug`}
       >
-        ¿Cómo me contacto contigo?
+        {t.steps.contact.title}
       </h3>
       <div className="flex flex-row gap-3">
         {contactOptions.map((option) => {
@@ -730,11 +724,11 @@ function StepContact({ formData, setFormData, montserrat }: StepProps) {
       </div>
       <div className="mt-5 flex flex-col gap-3">
         <div>
-          <label className={labelClass}>Nombre completo *</label>
+          <label className={labelClass}>{t.steps.contact.nameLabel}</label>
           <input
             type="text"
             required
-            placeholder="Tu nombre"
+            placeholder={t.steps.contact.namePlaceholder}
             className={inputClass}
             value={formData.name}
             onChange={(e) =>
@@ -744,11 +738,11 @@ function StepContact({ formData, setFormData, montserrat }: StepProps) {
         </div>
         {formData.contact === "Email" && (
           <div>
-            <label className={labelClass}>Email *</label>
+            <label className={labelClass}>{t.steps.contact.emailLabel}</label>
             <input
               type="email"
               required
-              placeholder="tu@email.com"
+              placeholder={t.steps.contact.emailPlaceholder}
               autoComplete="email"
               inputMode="email"
               aria-invalid={emailInvalid}
@@ -762,16 +756,16 @@ function StepContact({ formData, setFormData, montserrat }: StepProps) {
               <p
                 className={`${montserrat.className} text-red-400/80 text-xs mt-1`}
               >
-                Ingresa un email válido (ej. tu@email.com).
+                {t.steps.contact.emailInvalid}
               </p>
             )}
           </div>
         )}
         <div>
-          <label className={labelClass}>Empresa (opcional)</label>
+          <label className={labelClass}>{t.steps.contact.companyLabel}</label>
           <input
             type="text"
-            placeholder="Nombre de tu empresa"
+            placeholder={t.steps.contact.companyPlaceholder}
             className={inputClass}
             value={formData.company}
             onChange={(e) =>
@@ -780,10 +774,10 @@ function StepContact({ formData, setFormData, montserrat }: StepProps) {
           />
         </div>
         <div>
-          <label className={labelClass}>¿Cómo me encontraste? (opcional)</label>
+          <label className={labelClass}>{t.steps.contact.howFoundLabel}</label>
           <input
             type="text"
-            placeholder="LinkedIn, recomendación, Google..."
+            placeholder={t.steps.contact.howFoundPlaceholder}
             className={inputClass}
             value={formData.howFound}
             onChange={(e) =>

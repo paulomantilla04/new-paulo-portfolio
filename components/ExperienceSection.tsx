@@ -5,27 +5,13 @@ import { Montserrat, Special_Gothic_Expanded_One } from "next/font/google";
 import { motion, useScroll, useTransform } from "motion/react";
 import type { MotionValue } from "motion/react";
 import ShinyText from "@/components/ShinyText";
+import { useT } from "@/lib/i18n/context";
 
 const EXPERIENCES = [
-  {
-    period: "Abril 2026 - Presente",
-    role: "Desarrollador Fullstack",
-    company: "@ Nexen E-Logistics",
-    description: "Implementación de mejoras en plataformas para comercio exterior construidas con React y Laravel. Trabajo en el proceso completo desde diseñar e implementar interfaces, desarrollar APIs y la lógica de negocio.",
-  },
-  {
-    period: "Noviembre 2024 - Mayo 2025",
-    role: "Desarrollador Fullstack",
-    company: "@ ByDevs",
-    description: "Ayudé a desarrollar una plataforma community-driven para desarrolladores con arquitectura de microservicios en Spring Boot, auth JWT, internacionalización i18n y sistema de emails automatizados.",
-  },
-  {
-    period: "Agosto 2024 - Octubre 2024",
-    role: "Desarrollador Frontend",
-    company: "@ Grupo Automotriz \"Don Fer\"",
-    description: "Modernización de servicios digitales mediante un portal responsive para autogestión de citas e historial, y un dashboard administrativo para gestión de agendas y clientes.",
-  },
-];
+  { id: "nexen", company: "@ Nexen E-Logistics" },
+  { id: "bydevs", company: "@ ByDevs" },
+  { id: "donfer", company: "@ Grupo Automotriz \"Don Fer\"" },
+] as const;
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -62,6 +48,7 @@ function DotItem({ index, total, scrollYProgress }: DotItemProps) {
 }
 
 export default function ExperienceSection() {
+  const t = useT();
   const sectionRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -78,7 +65,7 @@ export default function ExperienceSection() {
       <div className="mx-auto max-w-3xl">
         <div className="mb-12 text-center">
           <ShinyText
-            text="Experiencia"
+            text={t.experience.title}
             speed={2}
             delay={0}
             color="#2CFF68"
@@ -100,9 +87,10 @@ export default function ExperienceSection() {
           />
 
           {EXPERIENCES.map((exp, index) => {
+            const item = t.experience.items[exp.id];
             return (
               <div
-                key={`${exp.period}-${exp.role}`}
+                key={exp.id}
                 className="mb-6 flex flex-row items-start gap-4"
               >
                 <div className="flex w-7 shrink-0 justify-center">
@@ -123,18 +111,18 @@ export default function ExperienceSection() {
                   <p
                     className={`${montserrat.className} mb-1 text-sm font-medium text-white/50`}
                   >
-                    {exp.period}
+                    {item.period}
                   </p>
                   <h3
                     className={`${specialGothicExpandedOne.className} text-md md:text-lg`}
                   >
-                    <span className="text-white">{exp.role}</span>{" "}
+                    <span className="text-white">{item.role}</span>{" "}
                     <span className="text-[#2CFF68]">{exp.company}</span>
                   </h3>
                   <p
                     className={`${montserrat.className} mt-3 text-sm leading-relaxed text-white/60`}
                   >
-                    {exp.description}
+                    {item.description}
                   </p>
                 </motion.div>
               </div>
