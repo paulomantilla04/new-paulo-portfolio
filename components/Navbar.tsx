@@ -3,15 +3,14 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { RiCloseLine, RiMenuLine } from "@remixicon/react";
+import { useT } from "@/lib/i18n/context";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
-const SECTIONS = [
-  { id: "inicio", label: "Inicio" },
-  { id: "experiencia", label: "Experiencia" },
-  { id: "proyectos", label: "Proyectos" },
-  { id: "contacto", label: "Contacto" },
-] as const;
+const SECTION_IDS = ["inicio", "experiencia", "proyectos", "contacto"] as const;
 
 export default function Navbar() {
+  const t = useT();
+  const SECTIONS = SECTION_IDS.map((id) => ({ id, label: t.nav[id] }));
   const [activeId, setActiveId] = useState<string>("inicio");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -75,6 +74,9 @@ export default function Navbar() {
             </a>
           );
         })}
+        <div className="ml-1 border-l border-white/10 pl-1">
+          <LanguageSwitcher />
+        </div>
       </nav>
 
       <button
@@ -94,7 +96,7 @@ export default function Navbar() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -8 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="md:hidden fixed top-20 right-6 z-100 min-w-[180px] flex flex-col gap-1 p-2 rounded-2xl bg-black/80 backdrop-blur-md border-[6px] border-black/20 origin-top-right"
+            className="md:hidden fixed top-20 right-6 z-100 min-w-45 flex flex-col gap-1 p-2 rounded-2xl bg-black/80 backdrop-blur-md border-[6px] border-black/20 origin-top-right"
           >
             {SECTIONS.map((section) => {
               const isActive = activeId === section.id;
@@ -116,6 +118,9 @@ export default function Navbar() {
                 </a>
               );
             })}
+            <div className="mt-1 border-t border-white/10 pt-2 flex justify-center">
+              <LanguageSwitcher />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

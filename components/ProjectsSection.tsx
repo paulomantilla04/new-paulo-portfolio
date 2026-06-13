@@ -14,6 +14,7 @@ import {
 import Button from "@/components/Button";
 import ShinyText from "@/components/ShinyText";
 import { RiCheckboxCircleLine } from "@remixicon/react";
+import { useT } from "@/lib/i18n/context";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -28,60 +29,51 @@ const specialGothicExpandedOne = Special_Gothic_Expanded_One({
 
 const PROJECTS = [
   {
+    id: "artebymm",
     title: "Artebymm",
-    subtitle: "Portafolio de Arte Digital",
     tags: ["Next.js", "Tailwind CSS", "TypeScript", "Supabase", "Resend"],
     thumbnail: "/artebymm/1.webp",
-    highlights: [
-      "Desarrollé una página web para una artista, donde puede mostrar sus trabajos y contactar con ella.",
-      "Se implementó un sistema de administración para la artista, donde puede ver las personas que se registran en una waitlist para ser contactadas.",
-    ],
-    gallery: [
-      { src: "/artebymm/1.webp", caption: "Página principal" },
-      { src: "/artebymm/2.webp", caption: "Página de retrato digital" },
-      { src: "/artebymm/3.webp", caption: "Dashboard de administrador" },
-    ],
+    images: ["/artebymm/1.webp", "/artebymm/2.webp", "/artebymm/3.webp"],
     github: null,
     website: "https://artebymm.com",
   },
   {
+    id: "ieee",
     title: "IEEE ESTl",
-    subtitle: "Página web de rama estudiantil de la IEEE",
     tags: ["React", "Tailwind CSS", "TypeScript", "Resend", "Clerk"],
     thumbnail: "/ieee/1.webp",
-    highlights: [
-      "Desarrollé con mi equipo de la rama una página web para la rama estudiantil de la IEEE, donde se pueden ver los eventos, miembros y contactar con la rama.",
-    ],
-    gallery: [
-      { src: "/ieee/1.webp", caption: "Página principal" },
-      { src: "/ieee/2.webp", caption: "Página de eventos" },
-      { src: "/ieee/3.webp", caption: "Página de miembros" },
-    ],
+    images: ["/ieee/1.webp", "/ieee/2.webp", "/ieee/3.webp"],
     github: null,
     website: "https://ieee-estl.com/",
   },
   {
+    id: "trueques",
     title: "Trueques Tlahue",
-    subtitle: "Página web de marketplace de trueques",
     tags: ["Next.js", "Tailwind CSS", "TypeScript", "Supabase"],
     thumbnail: "/trueques/2.webp",
-    highlights: [
-      "Desarrollé una página web de marketplace de trueques, donde se pueden comprar y vender productos, además de chat entre usuarios.",
-    ],
-    gallery: [
-      { src: "/trueques/1.webp", caption: "Página de inicio de sesión" },
-      { src: "/trueques/2.webp", caption: "Página principal" },
-      { src: "/trueques/3.webp", caption: "Página de producto" },
-      { src: "/trueques/4.webp", caption: "Dashboard de usuario" },
-      { src: "/trueques/5.webp", caption: "Página de favoritos" },
-      { src: "/trueques/6.webp", caption: "Chat entre usuarios" },
+    images: [
+      "/trueques/1.webp",
+      "/trueques/2.webp",
+      "/trueques/3.webp",
+      "/trueques/4.webp",
+      "/trueques/5.webp",
+      "/trueques/6.webp",
     ],
     github: "https://github.com/paulomantilla04/trueques-tlahue",
     website: null,
   },
-];
+] as const;
 
-type Project = (typeof PROJECTS)[number];
+type Project = {
+  title: string;
+  subtitle: string;
+  tags: readonly string[];
+  thumbnail: string;
+  highlights: readonly string[];
+  gallery: { src: string; caption: string }[];
+  github: string | null;
+  website: string | null;
+};
 
 interface ProjectCardProps {
   project: Project;
@@ -98,6 +90,7 @@ function ProjectCard({
   onToggle,
   onImageClick,
 }: ProjectCardProps) {
+  const t = useT();
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -109,7 +102,7 @@ function ProjectCard({
       <div className="relative h-48 md:h-64 overflow-hidden">
         <Image
           src={project.thumbnail}
-          alt={`Vista previa de ${project.title}`}
+          alt={t.projects.previewAlt.replace("{name}", project.title)}
           fill
           sizes="(max-width: 768px) 100vw, 672px"
           className="object-cover"
@@ -146,7 +139,7 @@ function ProjectCard({
           className={`${montserrat.className} text-white/70 hover:text-white text-sm font-medium transition-colors`}
           aria-expanded={isOpen}
         >
-          {isOpen ? "Ver menos ↑" : "Ver detalles ↓"}
+          {isOpen ? t.projects.seeLess : t.projects.seeMore}
         </button>
 
         <div className="flex gap-2">
@@ -156,7 +149,7 @@ function ProjectCard({
           {project.website && (
             <Button
               icon={<FiExternalLink />}
-              label="Sitio Web"
+              label={t.projects.viewSite}
               href={project.website}
               size="small"
             />
@@ -178,7 +171,7 @@ function ProjectCard({
                 <p
                   className={`${montserrat.className} text-white/40 text-xs tracking-widest mb-3`}
                 >
-                  LOGROS DESTACADOS
+                  {t.projects.highlightsLabel}
                 </p>
                 <ul className="flex flex-col gap-2 mb-6">
                   {project.highlights.map((highlight) => (
@@ -198,7 +191,7 @@ function ProjectCard({
                 <p
                   className={`${montserrat.className} text-white/40 text-xs tracking-widest mb-3`}
                 >
-                  GALERÍA
+                  {t.projects.galleryLabel}
                 </p>
                 <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 scrollbar-hide -mx-4 px-4">
                   {project.gallery.map((image, i) => (
@@ -237,8 +230,23 @@ type LightboxState = {
 };
 
 export default function ProjectsSection() {
+  const t = useT();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [lightbox, setLightbox] = useState<LightboxState | null>(null);
+
+  const projects: Project[] = PROJECTS.map((p) => {
+    const item = t.projects.items[p.id];
+    return {
+      title: p.title,
+      subtitle: item.subtitle,
+      tags: p.tags,
+      thumbnail: p.thumbnail,
+      highlights: item.highlights,
+      gallery: p.images.map((src, i) => ({ src, caption: item.captions[i] })),
+      github: p.github,
+      website: p.website,
+    };
+  });
 
   const closeLightbox = useCallback(() => setLightbox(null), []);
 
@@ -291,7 +299,7 @@ export default function ProjectsSection() {
         <div className="max-w-3xl mx-auto relative z-40">
           <div className="mb-12 text-center">
             <ShinyText
-              text="Proyectos"
+              text={t.projects.title}
               speed={2}
               color="#2CFF68"
               shineColor="#A3FFC0"
@@ -302,7 +310,7 @@ export default function ProjectsSection() {
           </div>
 
           <div className="flex flex-col gap-6">
-            {PROJECTS.map((project, index) => (
+            {projects.map((project, index) => (
               <ProjectCard
                 key={project.title}
                 project={project}
@@ -365,7 +373,7 @@ export default function ProjectsSection() {
 
             <button
               type="button"
-              aria-label="Imagen anterior"
+              aria-label={t.projects.prevImage}
               onClick={(e) => {
                 e.stopPropagation();
                 prev();
@@ -377,7 +385,7 @@ export default function ProjectsSection() {
 
             <button
               type="button"
-              aria-label="Imagen siguiente"
+              aria-label={t.projects.nextImage}
               onClick={(e) => {
                 e.stopPropagation();
                 next();
@@ -389,7 +397,7 @@ export default function ProjectsSection() {
 
             <button
               type="button"
-              aria-label="Cerrar"
+              aria-label={t.projects.closeImage}
               onClick={closeLightbox}
               className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-colors"
             >
