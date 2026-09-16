@@ -1,11 +1,12 @@
 "use client";
 
-import DitherBackground from "@/components/DitherBackground";
+import CRTWarp from "@/components/CRTWarp";
 import { Montserrat, Special_Gothic_Expanded_One } from "next/font/google";
 import Button from "@/components/Button";
 import ProjectWizard from "@/components/ProjectWizard";
 import { RiLinkedinBoxFill, RiGithubFill, RiAttachmentLine, RiInstagramFill } from "@remixicon/react";
 import { useT } from "@/lib/i18n/context";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
 
 const montserrat = Montserrat({
@@ -21,9 +22,12 @@ const specialGothicExpandedOne = Special_Gothic_Expanded_One({
 
 export default function HeroSection() {
   const t = useT();
+  const isMobile = useMediaQuery("(max-width: 767px)");
   return (
     <section id="inicio" className="relative w-full h-screen overflow-hidden">
-      <DitherBackground />
+      <div className="absolute inset-0 z-0">
+        <CRTWarp color="#ff3971" waveAmplitude={isMobile ? 1 : 0.5} speed={0.5} curvature={isMobile ? 0.1 : 0.3} waveFrequency={isMobile ? 3 : 6} />
+      </div>
 
       <div className="absolute inset-0 z-1 bg-linearj-to-b from-transparent to-black pointer-events-none" />
 
@@ -37,7 +41,7 @@ export default function HeroSection() {
           <div className="flex flex-row gap-4">
             <Button icon={<RiLinkedinBoxFill size={36} />} label="LinkedIn" type="iconOnly" href="https://www.linkedin.com/in/paulomantilla04/"/>
             <Button icon={<RiGithubFill size={36} />} label="GitHub" type="iconOnly" href="https://github.com/paulomantilla04" />
-            <Button icon={<RiAttachmentLine size={36} />} label="CV" type="iconOnly" download="resume.pdf" src="resume.pdf"/>
+            <Button icon={<RiAttachmentLine size={36} />} label="CV" type="iconOnly" download="paulo-resume.pdf" src="paulo-resume.pdf"/>
             <Button icon={<RiInstagramFill size={36} />} label="Instagram" type="iconOnly" href="https://www.instagram.com/paulomanher/" />
           </div>
         </div>

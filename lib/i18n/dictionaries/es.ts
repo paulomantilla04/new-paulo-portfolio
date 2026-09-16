@@ -31,6 +31,11 @@ export const es = {
         description:
           "Implementación de mejoras en plataformas para comercio exterior construidas con React y Laravel. Trabajo en el proceso completo desde diseñar e implementar interfaces, desarrollar APIs y la lógica de negocio.",
       },
+      freelance: {
+        period: "Mayo 2025 - Presente",
+        role: "Desarrollador Fullstack",
+        description: "Creación de plataformas web para pequeños negocios y profesionales independientes de principio a fin, ayudándolos a encontrar la mejor solución para su negocio."
+      },
       bydevs: {
         period: "Noviembre 2024 - Mayo 2025",
         role: "Desarrollador Fullstack",
@@ -57,6 +62,21 @@ export const es = {
     nextImage: "Imagen siguiente",
     closeImage: "Cerrar",
     items: {
+      citalo: {
+        subtitle: "SaaS de Gestión de Citas",
+        highlights: [
+          "Desarrollé un SaaS multi-tenant de agendamiento de citas para negocios de servicios en México, con página pública de reservas propia para cada negocio.",
+          "Integré pagos con Mercado Pago Connect: cada negocio conecta su cuenta vía OAuth y recibe el dinero directo, con anticipos configurables por servicio para reducir las inasistencias.",
+          "Construí el panel de administración con control de acceso por roles, gestión de horarios y servicios, y correos transaccionales automáticos.",
+        ],
+        captions: [
+          "Página principal",
+          "Página de inicio de sesión",
+          "Página del onboarding",
+          "Agenda del negocio",
+          "Página pública del negocio",
+        ],
+      },
       artebymm: {
         subtitle: "Portafolio de Arte Digital",
         highlights: [
@@ -154,7 +174,6 @@ export const es = {
       budget: {
         title: "¿Cuál es tu presupuesto aproximado?",
         options: [
-          "$5,000 - $10,000 MXN",
           "$10,000 - $20,000 MXN",
           "Más de $20,000 MXN",
           "Por definir",

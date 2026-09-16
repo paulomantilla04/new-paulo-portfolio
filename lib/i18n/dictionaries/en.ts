@@ -31,6 +31,11 @@ export const en: Dictionary = {
         description:
           "Building improvements for foreign-trade platforms built with React and Laravel. I'm involved in the whole process, from designing and building interfaces to developing APIs and business logic.",
       },
+      freelance: {
+        period: "May 2025 - Present",
+        role: "Fullstack Developer",
+        description: "Deliver web platforms for small businesses and independent professionals end to end, from scoping and proposals through deployment and handoff."
+      },
       bydevs: {
         period: "November 2024 - May 2025",
         role: "Fullstack Developer",
@@ -57,6 +62,21 @@ export const en: Dictionary = {
     nextImage: "Next image",
     closeImage: "Close",
     items: {
+      citalo: {
+        subtitle: "Appointment Management SaaS",
+        highlights: [
+          "Built a multi-tenant appointment-booking SaaS for service businesses in Mexico, with a dedicated public booking page for each business.",
+          "Integrated payments with Mercado Pago Connect: each business connects its own account via OAuth and gets paid directly, with configurable per-service deposits to reduce no-shows.",
+          "Developed the admin dashboard with role-based access control, scheduling and service management, and automated transactional emails.",
+        ],
+        captions: [
+          "Landing page",
+          "Login screen",
+          "Onboarding setup screen",
+          "Business calendar",
+          "Public business page",  
+        ],
+      },
       artebymm: {
         subtitle: "Digital Art Portfolio",
         highlights: [
@@ -154,9 +174,8 @@ export const en: Dictionary = {
       budget: {
         title: "What's your approximate budget?",
         options: [
-          "MXN 5,000 - 10,000",
-          "MXN 10,000 - 20,000",
-          "Over MXN 20,000",
+          "600 - 1,000 USD",
+          "Over 1,000 USD",
           "Not sure yet",
         ],
       },
