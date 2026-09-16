@@ -29,6 +29,15 @@ const specialGothicExpandedOne = Special_Gothic_Expanded_One({
 
 const PROJECTS = [
   {
+    id: "citalo",
+    title: "Cítalo",
+    tags: ["Next.js", "Tailwind CSS", "TypeScript", "Convex", "Better Auth", "Resend"],
+    thumbnail: "/citalo/citalo-1.webp",
+    images: ["/citalo/citalo-1.webp", "/citalo/citalo-2.webp", "/citalo/citalo-3.webp", "/citalo/citalo-4.webp", "/citalo/citalo-5.webp"],
+    github: null,
+    website: "https://citalo.com.mx/",
+  },
+  {
     id: "artebymm",
     title: "Artebymm",
     tags: ["Next.js", "Tailwind CSS", "TypeScript", "Supabase", "Resend"],
@@ -107,7 +116,7 @@ function ProjectCard({
           sizes="(max-width: 768px) 100vw, 672px"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
 
         <div className="absolute bottom-4 left-4">
 
@@ -176,7 +185,7 @@ function ProjectCard({
                 <ul className="flex flex-col gap-2 mb-6">
                   {project.highlights.map((highlight) => (
                     <li key={highlight} className="flex gap-2 items-center">
-                      <span className="flex-shrink-0">
+                      <span className="shrink-0">
                         <RiCheckboxCircleLine className="text-[#2CFF68] text-lg" />
                       </span>
                       <p className={`${montserrat.className} text-white/80 text-sm leading-relaxed`}>
@@ -198,7 +207,7 @@ function ProjectCard({
                     <div
                       key={image.src}
                       onClick={() => onImageClick(i)}
-                      className="snap-start flex-shrink-0 w-48 md:w-56 rounded-xl overflow-hidden relative group cursor-pointer h-36 md:h-44"
+                      className="snap-start shrink-0 w-48 md:w-56 rounded-xl overflow-hidden relative group cursor-pointer h-36 md:h-44"
                     >
                       <Image
                         src={image.src}
@@ -333,7 +342,7 @@ export default function ProjectsSection() {
       <AnimatePresence>
         {lightbox && (
           <motion.div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+            className="fixed inset-0 z-100 flex items-center justify-center bg-black/90 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

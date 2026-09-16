@@ -26,9 +26,9 @@ export default function Footer() {
     >
       <div className="pointer-events-none absolute inset-0 z-0">
       <Grainient
-          color1="#d5009c"
+          color1="#ff0048"
           color2="#000000"
-          color3="#750056"
+          color3="#731c1c"
           timeSpeed={0.1}
           colorBalance={0}
           warpStrength={4}

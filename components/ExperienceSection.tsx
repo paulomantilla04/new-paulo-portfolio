@@ -9,6 +9,7 @@ import { useT } from "@/lib/i18n/context";
 
 const EXPERIENCES = [
   { id: "nexen", company: "@ Nexen E-Logistics" },
+  { id: "freelance", company: "Freelance" },
   { id: "bydevs", company: "@ ByDevs" },
   { id: "donfer", company: "@ Grupo Automotriz \"Don Fer\"" },
 ] as const;
